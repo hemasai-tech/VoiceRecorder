@@ -98,7 +98,7 @@ const RecordList = (props) => {
         setLoaded(true);
         return resolve();
       });
-      console.log("soundsound",sound);
+      console.log("sound",sound);
     });
   }
 
