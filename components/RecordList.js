@@ -14,7 +14,7 @@ const stopicon = require('../assets/img/stop.png')
 const pauseIcon = require('../assets/img/pause.png')
 
 const RecordList = (props) => {
-  var sound = null;
+  global.sound = null;
   const [audioFile, setAudioFile] = useState('');
   const [recording, setRecording] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -91,19 +91,19 @@ const RecordList = (props) => {
         return reject("File path is empty")
       }
 
-      sound = new Sound(audioFile, error => {
+      global.sound  = new Sound(audioFile, error => {
         if (error) {
           return reject(error)
         }
         setLoaded(true);
         return resolve();
       });
-      console.log("sound",sound);
+      console.log("sound",global.sound );
     });
   }
 
   const play = async () => {
-    console.log(sound);
+    console.log(global.sound );
     if (!loaded) {
       try {
         await onLoad();
@@ -114,7 +114,7 @@ const RecordList = (props) => {
     console.log('playingggg');
     setPaused(false);
     Sound.setCategory('Playback');
-    sound.play(success => {
+    global.sound.play(success => {
       if (success) {
         console.log('Playted Successfully');
       } else {
@@ -126,7 +126,7 @@ const RecordList = (props) => {
 
   const pause = () => {
     console.log('pausinggg');
-    sound.pause();
+    global.sound.pause();
     setPaused(true)
   }
 
