@@ -1,7 +1,6 @@
 import { View, Text, Touchable, TouchableOpacity, Image, ImageBackground, StyleSheet, Alert, PermissionsAndroid, ToastAndroid } from 'react-native'
 import React, { useRef, useState, useEffect } from 'react'
 import RBSheet from "react-native-raw-bottom-sheet";
-import AudioRecord from 'react-native-audio-record';
 import Sound from 'react-native-sound';
 import Permissions from 'react-native-permissions';
 import { Buffer } from 'buffer';
