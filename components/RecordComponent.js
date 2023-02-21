@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Sound from 'react-native-sound';
-import AudioRecorder from 'react-native-audio';
+import { AudioRecorder, AudioUtils } from 'react-native-audio';
 
 const RecordComponent = () => {
   const [recordings, setRecordings] = useState([]);
@@ -10,6 +10,14 @@ const RecordComponent = () => {
 
   const startRecording = async () => {
     try {
+      let audioPath = AudioUtils.DocumentDirectoryPath + '/test.aac';
+
+      AudioRecorder.prepareRecordingAtPath(audioPath, {
+        SampleRate: 22050,
+        Channels: 1,
+        AudioQuality: "Low",
+        AudioEncoding: "aac"
+      });
       const recording = await AudioRecorder.startRecording();
       setRecordings([...recordings, recording]);
       setSelectedIndex(recordings.length);
@@ -19,7 +27,7 @@ const RecordComponent = () => {
   };
 
   const playAudio = (index) => {
-    const sound = new Sound(recordings[index], Sound.MAIN_BUNDLE, (error) => {
+    const sound = new Sound(recordings[index], "", (error) => {
       if (error) {
         console.log('Error loading sound:', error);
       } else {
@@ -36,11 +44,26 @@ const RecordComponent = () => {
   };
 
   const pauseAudio = (index) => {
-    Sound.pause();
+    let pause = new Sound;
+    pause.pause()
+
   };
 
   const stopAudio = (index) => {
-    Sound.stop();
+    const stopSound = new Sound(recordings[index], Sound.MAIN_BUNDLE, (error) => {
+      if (error) {
+        console.log('Error loading sound:', error);
+      } else {
+        setSelectedIndex(index);
+        stopSound.stop((success) => {
+          if (success) {
+            console.log('Sound played successfully');
+          } else {
+            console.log('Sound playback failed');
+          }
+        });
+      }
+    });
     setSelectedIndex(null);
   };
 
@@ -49,6 +72,7 @@ const RecordComponent = () => {
   return (
     <View>
       <Text>RecordComponent</Text>
+      {console.log("recordings", recordings)}
       <View>
         {recordings.map((recording, index) => (
           <View key={index}>
