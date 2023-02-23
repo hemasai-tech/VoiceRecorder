@@ -97,9 +97,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.awesomeproject"
+    namespace "com.vocaldiary"
     defaultConfig {
-        applicationId "com.awesomeproject"
+        applicationId "com.vocaldiary"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -155,7 +155,7 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-
+    implementation(project(':react-native-sound'))
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
