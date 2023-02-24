@@ -21,6 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RecordList = props => {
   const refRBSheet = useRef();
+  var Records = [];
   var newArray = [];
   const [recordsList, setRecordsList] = useState([]);
   const [state, updateState] = React.useState();
@@ -29,7 +30,7 @@ const RecordList = props => {
   useEffect(() => {
     Sound.setCategory('Playback');
     getItem();
-  }, []);
+  }, [refRBSheet]);
 
   const playFn = item => {
     var whoosh = new Sound(item, Sound.MAIN_BUNDLE, error => {
@@ -59,9 +60,9 @@ const RecordList = props => {
   const getItem = async () => {
     try {
       let getRecordings = await AsyncStorage.getItem('Recordings');
-      console.log('getRecordings!!!!!!!!!!!', getRecordings);
-      newArray.push(getRecordings);
-      setRecordsList(newArray);
+      let parsedRecords = JSON.parse(getRecordings);
+      console.log('parsedRecords!!!!!!!!!!!', parsedRecords);
+      setRecordsList(parsedRecords);
     } catch (error) {
       console.log(error);
     }
@@ -72,11 +73,7 @@ const RecordList = props => {
     return (
       <View>
         <TouchableOpacity style={styles.listView} onPress={() => playFn(item)}>
-          <Text style={styles.listItem}>
-            {item}
-            {'  '}
-            {index}
-          </Text>
+          <Text style={styles.listItem}>{item.audio}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -91,7 +88,7 @@ const RecordList = props => {
         }`}</Text>
       </TouchableOpacity>
       <FlatList
-        data={recordsList?.length > 0 ? recordsList : []}
+        data={recordsList}
         keyExtractor={(item, index) => index.toString()}
         renderItem={(item, index) => renderRecordList(item, index)}
       />

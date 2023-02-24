@@ -42,15 +42,13 @@ export default class RecordComponent extends Component {
       showPlayView: false,
       showPlayPause: false,
       count: 0,
+      voiceRecords: [],
     };
     this.audioRecorderPlayer = new AudioRecorderPlayer();
     // this.audioRecorderPlayer.setSubscriptionDuration(0.09); // optional. Default is 0.1
   }
 
   onStartRecord = async () => {
-    this.setState({
-      count: this.state.count + 1,
-    });
     console.log(this.state.count);
     if (Platform.OS === 'android') {
       try {
@@ -97,7 +95,9 @@ export default class RecordComponent extends Component {
     }
     const path = Platform.select({
       ios: `audio ${this.state.count}.m4a`,
-      android: `${DocumentDirectoryPath}/audio${this.state.count}.mp4`,
+      android: `${DocumentDirectoryPath}/audio${Math.floor(
+        Math.random() * 10,
+      )}.mp4`,
     });
     const audioSet = {
       AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
@@ -118,7 +118,6 @@ export default class RecordComponent extends Component {
         showPlayPause: true,
       });
     });
-    console.log(`uri: ${uri}`);
   };
 
   onStopRecord = async () => {
@@ -145,22 +144,20 @@ export default class RecordComponent extends Component {
   };
 
   onStartPlay = async e => {
+    this.setState({
+      count: Math.random() * 100,
+    });
     console.log('onStartPlay');
     const path = Platform.select({
       ios: `audio ${this.state.count}.m4a`,
       android: `${DocumentDirectoryPath}/audio${this.state.count}.mp4`,
     });
     const msg = await this.audioRecorderPlayer.startPlayer(path);
+    let voices = [];
+    voices.push({audio: msg});
+    AsyncStorage.setItem('Recordings', JSON.stringify(voices));
+
     this.audioRecorderPlayer.setVolume(1.0);
-    console.log('msg######', msg);
-
-    let arrayRecord = [];
-    arrayRecord.push(msg);
-    this.props.callBackfn(arrayRecord);
-    console.log(arrayRecord, 'arrayRecordarray');
-
-    AsyncStorage.setItem('Recordings', msg);
-
     this.audioRecorderPlayer.addPlayBackListener(e => {
       if (e.current_position === e.duration) {
         console.log('finished');
@@ -186,7 +183,7 @@ export default class RecordComponent extends Component {
     try {
       await this.audioRecorderPlayer.stopPlayer();
       this.audioRecorderPlayer.removePlayBackListener();
-      this.forceUpdate()
+      this.forceUpdate();
       this.props.refRBSheet?.current.close();
     } catch (error) {
       console.log(error);
