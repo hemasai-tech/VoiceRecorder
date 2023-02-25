@@ -20,6 +20,7 @@ import AudioRecorderPlayer, {
 } from 'react-native-audio-recorder-player';
 import {DocumentDirectoryPath} from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Alert} from 'react-native';
 
 var record = require('../assets/img/record.png');
 var closeIcon = require('../assets/img/close.png');
@@ -42,10 +43,11 @@ export default class RecordComponent extends Component {
       showPlayView: false,
       showPlayPause: false,
       count: 0,
-      voiceRecords: [],
+      voiceRecords: '',
+      voiceArray: [],
     };
     this.audioRecorderPlayer = new AudioRecorderPlayer();
-    // this.audioRecorderPlayer.setSubscriptionDuration(0.09); // optional. Default is 0.1
+    this.audioRecorderPlayer.setSubscriptionDuration(0.09); // optional. Default is 0.1
   }
 
   onStartRecord = async () => {
@@ -118,6 +120,7 @@ export default class RecordComponent extends Component {
         showPlayPause: true,
       });
     });
+    console.log(uri, 'uri');
   };
 
   onStopRecord = async () => {
@@ -128,7 +131,7 @@ export default class RecordComponent extends Component {
         recordSecs: 0,
         showPlayView: true,
       });
-      console.log(result);
+      console.log(result, 'onStopRecord');
     } catch (error) {
       console.log(error);
     }
@@ -137,7 +140,7 @@ export default class RecordComponent extends Component {
   onPauseRecord = async () => {
     try {
       const result = await this.audioRecorderPlayer.pauseRecorder();
-      console.log(result);
+      console.log(result, 'onPauseRecord');
     } catch (error) {
       console.log(error);
     }
@@ -150,12 +153,11 @@ export default class RecordComponent extends Component {
     console.log('onStartPlay');
     const path = Platform.select({
       ios: `audio ${this.state.count}.m4a`,
-      android: `${DocumentDirectoryPath}/audio${this.state.count}.mp4`,
+      android: `${DocumentDirectoryPath}/audio${Math.floor(
+        Math.random() * 10,
+      )}.mp4`,
     });
     const msg = await this.audioRecorderPlayer.startPlayer(path);
-    let voices = [];
-    voices.push({audio: msg});
-    AsyncStorage.setItem('Recordings', JSON.stringify(voices));
 
     this.audioRecorderPlayer.setVolume(1.0);
     this.audioRecorderPlayer.addPlayBackListener(e => {
@@ -172,6 +174,10 @@ export default class RecordComponent extends Component {
         duration: this.audioRecorderPlayer.mmssss(Math.floor(e.duration)),
       });
     });
+    this.setState({
+      voiceRecords: msg,
+    });
+    this.props?.callBackfn(msg);
   };
 
   onPausePlay = async e => {
@@ -179,15 +185,21 @@ export default class RecordComponent extends Component {
   };
 
   onStopPlay = async e => {
-    console.log('onStopPlay');
     try {
       await this.audioRecorderPlayer.stopPlayer();
       this.audioRecorderPlayer.removePlayBackListener();
-      this.forceUpdate();
-      this.props.refRBSheet?.current.close();
     } catch (error) {
       console.log(error);
     }
+  };
+
+  export = () => {
+    const {voiceArray, voiceRecords} = this.state;
+    console.log(voiceRecords, 'voiceRecords');
+    voiceArray.push({audio: voiceRecords});
+    console.log('voiceArray', voiceArray);
+    AsyncStorage.setItem('Recordings', JSON.stringify(voiceArray));
+    // this.forceUpdate();
   };
 
   render() {
@@ -253,6 +265,11 @@ export default class RecordComponent extends Component {
             </View>
           )}
         </ScrollView>
+        <TouchableOpacity
+          style={styles.exportBtn}
+          onPress={() => this.export()}>
+          <Text style={styles.exportBtnText}>Export</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -309,5 +326,19 @@ const styles = StyleSheet.create({
     // textShadowOffset:{height:1,width:1},
     // textShadowColor:'red',
     // textShadowRadius:20
+  },
+  exportBtn: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    borderRadius: 7,
+    backgroundColor: '#937DC2',
+    marginVertical: 20,
+  },
+  exportBtnText: {
+    color: '#ffffff',
+    fontWeight: '600',
+    fontSize: 16,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
   },
 });

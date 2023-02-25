@@ -30,7 +30,8 @@ const RecordList = props => {
   useEffect(() => {
     Sound.setCategory('Playback');
     getItem();
-  }, [refRBSheet]);
+    forceUpdate()
+  }, []);
 
   const playFn = item => {
     var whoosh = new Sound(item, Sound.MAIN_BUNDLE, error => {
@@ -73,7 +74,7 @@ const RecordList = props => {
     return (
       <View>
         <TouchableOpacity style={styles.listView} onPress={() => playFn(item)}>
-          <Text style={styles.listItem}>{item.audio}</Text>
+          <Text style={styles.listItem}>{item.audio.split("/")[6]}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -104,14 +105,18 @@ const RecordList = props => {
             backgroundColor: 'transparent',
           },
           container: {
-            borderRadius: 20,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
             backgroundColor: '#432C7A',
           },
         }}>
         <RecordComponent
           refRBSheet={refRBSheet}
           callBackfn={list => {
-            setRecordsList(list);
+            // setRecordsList(list);
+            let recordListProp = [];
+            recordListProp.push({audio : list});
+            setRecordsList(recordListProp)
             console.log(list, 'List In recordList.js');
           }}
         />
@@ -122,15 +127,14 @@ const RecordList = props => {
 export default RecordList;
 const styles = StyleSheet.create({
   lisMain: {
-    // backgroundColor: "#FEDEFF"
+    backgroundColor: "#937DC2",
+    flex:1
   },
   listView: {
-    backgroundColor: 'yellow',
     paddingHorizontal: 10,
   },
   listItem: {
     margin: 3,
-    backgroundColor: 'red',
     color: 'white',
     fontWeight: '800',
     fontSize: 15,
@@ -139,7 +143,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   btn: {
-    backgroundColor: '#FEFBE9',
+    backgroundColor: '#432C7A',
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 'auto',
@@ -152,6 +156,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontWeight: '700',
     fontSize: 20,
-    color: '#18122B',
+    color: '#ffffff',
   },
 });

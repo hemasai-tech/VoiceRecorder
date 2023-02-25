@@ -18,7 +18,7 @@ const img = require('../assets/img/close.png');
 const mixer = require('../assets/img/Mixer.jpg');
 const Audio = props => {
   const {navigation} = props;
-  console.log(props)
+  console.log(props);
   const [date, selectDate] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -70,7 +70,7 @@ const Audio = props => {
             <View style={styles.clndrRow}>
               <View style={styles.showDateView}>
                 <Text style={styles.showDate}>
-                  {date !== '' ? date : latestDate}
+                  Selected Date :- {date !== '' ? date : latestDate}
                 </Text>
               </View>
               <TouchableOpacity
@@ -92,12 +92,12 @@ const Audio = props => {
                     dateSelected: day.dateString,
                   });
                   console.log('selected day', day.dateString);
-                  setModalVisible(false)
+                  setModalVisible(false);
                 }}
                 enableSwipeMonths={true}
                 theme={{
                   backgroundColor: '#ffffff',
-                  calendarBackground: '#C689C6',
+                  calendarBackground: '#937DC2',
                   textSectionTitleColor: '#ffffff',
                   textSectionTitleDisabledColor: '#d9e1e8',
                   selectedDayBackgroundColor: '#ffffff',
@@ -134,7 +134,7 @@ const Audio = props => {
 export default Audio;
 export const styles = StyleSheet.create({
   mainView: {
-    backgroundColor: '#FEDEFF',
+    backgroundColor: '#ffffff',
     flex: 1,
   },
   headerTxt: {
@@ -149,7 +149,7 @@ export const styles = StyleSheet.create({
   },
   header: {},
   addBtn: {
-    backgroundColor: '#2D033B',
+    backgroundColor: '#432C7A',
     marginLeft: 'auto',
     marginRight: 10,
     borderRadius: 10,
@@ -178,9 +178,9 @@ export const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowOpacity: 2,
+    shadowRadius: 10,
+    elevation: 15,
     height: 300,
     width: '95%',
   },
@@ -191,6 +191,7 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 18,
     textAlign: 'center',
+    color: '#432C7A',
   },
   showDateView: {
     alignContent: 'center',

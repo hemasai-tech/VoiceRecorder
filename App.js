@@ -25,18 +25,28 @@ const App = () => {
           <Stack.Screen
             name="Splash"
             component={Splash}
-            options={{headerShown: false}}
+            options={({navigation}) => ({
+              title: '',
+              statusBarColor: '#432C7A',
+              navigationBarColor: '#432C7A',
+            })}
           />
           <Stack.Screen
             name="Audio"
             component={Audio}
-            options={{headerShown: false}}
+            options={({navigation}) => ({
+              title: 'Add Screen',
+              statusBarColor: '#432C7A',
+              navigationBarColor: '#432C7A',
+            })}
           />
           <Stack.Screen
             name="RecordList"
             component={RecordList}
             options={({navigation}) => ({
               title: 'Record List',
+              statusBarColor: '#432C7A',
+              navigationBarColor: '#432C7A',
             })}
           />
         </Stack.Navigator>
